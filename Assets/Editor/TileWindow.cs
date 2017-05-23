@@ -29,7 +29,7 @@ public class TileWindow : EditorWindow
 	public GUIStyle textureStyle;
 	public GUIStyle textureStyleAct;
 
-	[MenuItem("Tools/TilemapEditor")]
+	[MenuItem("Window/TilemapEditor")]
 	private static void TilemapEditor()
 	{
 		EditorWindow.GetWindow(typeof (TileWindow));
