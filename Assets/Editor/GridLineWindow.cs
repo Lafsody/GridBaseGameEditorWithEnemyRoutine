@@ -43,12 +43,88 @@ public class GridLineWindow : EditorWindow
 			}
 
 			Gizmos.color = Color.white;
-			for (float i = 0; i < maxGrid.x; i+=gridSize.x)
-				Gizmos.DrawLine(new Vector3(i - xOffset, 0.0f, 0 - xOffset), new Vector3(i - xOffset, 0.0f, maxGrid.x - xOffset));
-			for (float j = 0; j < maxGrid.y; j+=gridSize.y)
-				Gizmos.DrawLine(new Vector3(0 - yOffset, 0.0f, j - yOffset), new Vector3(maxGrid.y - yOffset, 0.0f, j - yOffset));
+			for (float i = 0; i <= maxGrid.x; i+=gridSize.x)
+				Gizmos.DrawLine(new Vector3(i - xOffset, 0.0f, 0 - yOffset), new Vector3(i - xOffset, 0.0f, maxGrid.x - yOffset));
+			for (float j = 0; j <= maxGrid.y; j+=gridSize.y)
+				Gizmos.DrawLine(new Vector3(0 - xOffset, 0.0f, j - yOffset), new Vector3(maxGrid.y - xOffset, 0.0f, j - yOffset));
 			SceneView.RepaintAll();
 		}
 
+	}
+
+	public class SettingWindow : EditorWindow
+	{
+		Rect SettingSection;
+
+		[Range(0, 100)]
+		static Vector2 tempGridSize;
+		[Range(0, 100)]
+		static Vector2 tempMaxGrid;
+		static bool tempShiftToMiddle;
+
+		[MenuItem("Tools/GridLine/Setting")]
+		static void Init()
+		{
+			var window = (SettingWindow)GetWindow(typeof(SettingWindow));
+			window.minSize = new Vector2(400, 300);
+			window.Show();
+		}
+
+		void OnEnable()
+		{
+			InitData();
+		}
+
+		void InitData()
+		{
+			tempGridSize = gridSize;
+			tempMaxGrid = maxGrid;
+			tempShiftToMiddle = shiftToMiddle;
+		}
+
+		void OnGUI()
+		{
+			DrawLayouts();
+			DrawSetting();
+		}
+
+		void DrawLayouts()
+		{
+			SettingSection.width = Screen.width;
+			SettingSection.height = Screen.height;
+		}
+
+		void DrawSetting()
+		{
+			GUILayout.BeginArea(SettingSection);
+			
+			tempGridSize.x = Mathf.Clamp(tempGridSize.x, 0.5f, 100);
+			tempGridSize.y = Mathf.Clamp(tempGridSize.y, 0.5f, 100);
+
+			tempMaxGrid.x = Mathf.Clamp(tempMaxGrid.x, 2, 100);
+			tempMaxGrid.y = Mathf.Clamp(tempMaxGrid.y, 2, 100);
+
+			tempGridSize = EditorGUILayout.Vector2Field("Grid Size", tempGridSize);
+			tempMaxGrid = EditorGUILayout.Vector2Field("Max Grid", tempMaxGrid);
+			
+			GUILayout.BeginHorizontal();
+			EditorGUILayout.LabelField("Shift to Middle ");
+			tempShiftToMiddle = EditorGUILayout.Toggle(tempShiftToMiddle);
+			GUILayout.EndHorizontal();
+
+			if (GUILayout.Button("Update"))
+			{
+				UpdateValue();
+			}
+
+			GUILayout.EndArea();
+		}
+
+		void UpdateValue()
+		{
+			gridSize = tempGridSize;
+			maxGrid = tempMaxGrid;
+			shiftToMiddle = tempShiftToMiddle;
+		}
 	}
 }
