@@ -5,10 +5,12 @@ using UnityEditor;
 
 public class MapEditorWindow : EditorWindow
 {
+	Color headerSectionColor = new Color(40/255f, 40/255f, 100/255f, 1);
+
 	Texture2D headerTexture;
 	Texture2D visibilityControlTexture;
 	Texture2D objectEditorTexture;
-
+	
 	GUISkin skin;
 
 	Rect headerSection;
@@ -31,7 +33,10 @@ public class MapEditorWindow : EditorWindow
 
 	void InitTexture()
 	{
-		headerTexture = Resources.Load<Texture2D>("bg/bg1");
+		headerTexture = new Texture2D(1, 1);
+		headerTexture.SetPixel(0, 0, headerSectionColor);
+		headerTexture.Apply();
+
 		visibilityControlTexture = Resources.Load<Texture2D>("bg/bg2");
 		objectEditorTexture = Resources.Load<Texture2D>("bg/bg3");	
 	}
@@ -40,6 +45,8 @@ public class MapEditorWindow : EditorWindow
 	{
 		DrawLayout();
 		DrawHeader();
+		DrawVisiblitySetting();
+		DrawObjectEditor();
 	}
 
 	private void DrawLayout()
@@ -60,14 +67,26 @@ public class MapEditorWindow : EditorWindow
 		objectEditorSection.height = Screen.height - headerSection.height;
 
 		GUI.DrawTexture(headerSection, headerTexture);
-		GUI.DrawTexture(visibilityControlSection, visibilityControlTexture);
-		GUI.DrawTexture(objectEditorSection, objectEditorTexture);
 	}
 
 	void DrawHeader()
 	{
-		GUILayout.BeginArea(headerSection);
+		GUILayout.BeginArea(headerSection, skin.GetStyle("Header1"));
 		GUILayout.Label("Map Editor", skin.GetStyle("Header1"));
+		GUILayout.EndArea();
+	}
+
+	void DrawVisiblitySetting()
+	{
+		GUILayout.BeginArea(visibilityControlSection, skin.GetStyle("VisibilitySetting"));
+
+		GUILayout.EndArea();
+	}
+
+	void DrawObjectEditor()
+	{
+		GUILayout.BeginArea(objectEditorSection, skin.GetStyle("ObjectEditor"));
+
 		GUILayout.EndArea();
 	}
 }
