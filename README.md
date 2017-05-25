@@ -10,3 +10,10 @@ Features
 - Can Add Routine to Player And Enemy
 
 The purpose of this project is for practice using Unity Editor and try something cool.
+
+Menu
+- GameEditor
+  - Gridline
+    - Setting
+    - ToggleGridline
+  - MapEditor
