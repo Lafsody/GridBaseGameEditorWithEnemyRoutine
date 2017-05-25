@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: f25d1991cdc5fc94b9c905c4c2840b29
+timeCreated: 1495685992
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: 2006_iannnnnPDA
+  fontNames:
+  - 2006_iannnnnPDA
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
