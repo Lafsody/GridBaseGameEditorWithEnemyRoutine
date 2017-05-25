@@ -9,6 +9,8 @@ public class MapEditorWindow : EditorWindow
 	Texture2D visibilityControlTexture;
 	Texture2D objectEditorTexture;
 
+	GUISkin skin;
+
 	Rect headerSection;
 	Rect visibilityControlSection;
 	Rect objectEditorSection;
@@ -24,13 +26,14 @@ public class MapEditorWindow : EditorWindow
 	void OnEnable()
 	{
 		InitTexture();
+		skin = Resources.Load<GUISkin>("GUIStyle/MapEditorSkin");
 	}
 
 	void InitTexture()
 	{
 		headerTexture = Resources.Load<Texture2D>("bg/bg1");
 		visibilityControlTexture = Resources.Load<Texture2D>("bg/bg2");
-		objectEditorTexture = Resources.Load<Texture2D>("bg/bg3");
+		objectEditorTexture = Resources.Load<Texture2D>("bg/bg3");	
 	}
 
 	void OnGUI()
@@ -64,7 +67,7 @@ public class MapEditorWindow : EditorWindow
 	void DrawHeader()
 	{
 		GUILayout.BeginArea(headerSection);
-		GUILayout.Label("Map Editor");
+		GUILayout.Label("Map Editor", skin.GetStyle("Header1"));
 		GUILayout.EndArea();
 	}
 }
