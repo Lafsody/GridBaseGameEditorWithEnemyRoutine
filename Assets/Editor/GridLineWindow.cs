@@ -11,7 +11,7 @@ public class GridLineWindow : EditorWindow
 	static Vector2 maxGrid = new Vector2(100, 100);
 	static bool shiftToMiddle = true;
 
-	[MenuItem("GameEditor/GridLine/ToggleGridline")]
+	[MenuItem("GameEditor/GridLine/ToggleGridline %t")]
 	private static void Init()
 	{
 		ToggleGridLine();
