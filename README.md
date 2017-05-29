@@ -17,3 +17,8 @@ Menu
     - Setting
     - ToggleGridline
   - MapEditor
+
+
+References:
+- https://www.youtube.com/playlist?list=PL4CCSwmU04MiCnps1DRmwIEEH7gP9X3qq
+- UNITY 2D TILEMAPPER http://www.kaisirak.com/
