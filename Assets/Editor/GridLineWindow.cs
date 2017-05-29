@@ -5,9 +5,11 @@ using System;
 
 public class GridLineWindow : EditorWindow
 {
-	static readonly String enableFlagStringPrefs = "isGridLineEnable";
-	static readonly String gridSizePrefs = "gridSize";
-	static readonly String shiftToMiddlePrefs = "shiftToMiddle";
+	public static readonly String enableFlagStringPrefs = "isGridLineEnable";
+	public static readonly String gridSizePrefs = "gridSize";
+	public static readonly String gridSizeXPrefs = "gridSizeX";
+	public static readonly String gridSizeYPrefs = "gridSizeY";
+	public static readonly String shiftToMiddlePrefs = "shiftToMiddle";
 
 	static Vector2 gridSize = new Vector2(1, 1);
 	static Vector2 maxGrid = new Vector2(100, 100);
@@ -128,8 +130,8 @@ public class GridLineWindow : EditorWindow
 			maxGrid = tempMaxGrid;
 			shiftToMiddle = tempShiftToMiddle;
 
-			EditorPrefs.SetFloat(gridSizePrefs + "x", gridSize.x);
-			EditorPrefs.SetFloat(gridSizePrefs + "y", gridSize.y);
+			EditorPrefs.SetFloat(gridSizeXPrefs, gridSize.x);
+			EditorPrefs.SetFloat(gridSizeYPrefs, gridSize.y);
 			EditorPrefs.SetBool(shiftToMiddlePrefs, shiftToMiddle);
 		}
 	}

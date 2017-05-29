@@ -100,18 +100,32 @@ public class GridEditorWindow : EditorWindow
 		Vector2 mousePos = Event.current.mousePosition;
 							mousePos.y = SceneView.currentDrawingSceneView.camera.pixelHeight - mousePos.y;
 		Vector3 mouseWorldPos = SceneView.currentDrawingSceneView.camera.ScreenPointToRay(mousePos).origin;
+
 		var gridSize = new Vector2(1f, 1f);
-		if (EditorPrefs.HasKey("gridSizex") && EditorPrefs.HasKey("gridSizey"))
+		if (EditorPrefs.HasKey(GridLineWindow.gridSizeXPrefs) && EditorPrefs.HasKey(GridLineWindow.gridSizeYPrefs))
 		{
-			gridSize.x = EditorPrefs.GetFloat("gridSizex");
-			gridSize.y = EditorPrefs.GetFloat("gridSizey");
+			gridSize.x = EditorPrefs.GetFloat(GridLineWindow.gridSizeXPrefs);
+			gridSize.y = EditorPrefs.GetFloat(GridLineWindow.gridSizeYPrefs);
+		}
+		var shiftToMiddle = false;
+		if (EditorPrefs.HasKey(GridLineWindow.shiftToMiddlePrefs))
+		{
+			shiftToMiddle = EditorPrefs.GetBool(GridLineWindow.shiftToMiddlePrefs);
 		}
 
 		mouseWorldPos.y = 0;
 		if (gridSize.x > 0.05f && gridSize.y > 0.05f)
 		{
-			mouseWorldPos.x = Mathf.Floor((mouseWorldPos.x + gridSize.x/2)/ gridSize.x) * gridSize.x;
-			mouseWorldPos.z = Mathf.Floor((mouseWorldPos.z + gridSize.y/2)/ gridSize.y) * gridSize.y;
+			if (shiftToMiddle)
+			{
+				mouseWorldPos.x = Mathf.Floor((mouseWorldPos.x + gridSize.x/2)/ gridSize.x) * gridSize.x;
+				mouseWorldPos.z = Mathf.Floor((mouseWorldPos.z + gridSize.y/2)/ gridSize.y) * gridSize.y;
+			}
+			else
+			{
+				mouseWorldPos.x = Mathf.Floor((mouseWorldPos.x)/ gridSize.x) * gridSize.x + gridSize.x/2;
+				mouseWorldPos.z = Mathf.Floor((mouseWorldPos.z)/ gridSize.y) * gridSize.y + gridSize.y/2;
+			}
 		}
 		
 		mouseWorldPos.y = 0;
