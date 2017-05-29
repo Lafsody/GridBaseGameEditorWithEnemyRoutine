@@ -104,5 +104,7 @@ public class GridEditorWindow : EditorWindow
 		Object prefab = AssetDatabase.LoadAssetAtPath("Assets/Prefabs/SceneObjects/Floor.prefab", typeof(GameObject));
 		GameObject clone = Instantiate(prefab, Vector3.zero, Quaternion.identity) as GameObject;
 		
+		Undo.RegisterCreatedObjectUndo(clone, "Create " + clone.name);
+		Undo.IncrementCurrentGroup();
 	}
 }
