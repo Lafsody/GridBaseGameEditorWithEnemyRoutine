@@ -15,7 +15,7 @@ Menu
 - GameEditor
   - Gridline
     - Setting
-    - ToggleGridline
+    - ToggleGridline (Ctrl + T)
   - MapEditor
 
 
