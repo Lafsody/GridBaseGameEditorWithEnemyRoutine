@@ -81,6 +81,7 @@ public class GridEditorWindow : EditorWindow
 			if (!isEnabled)
 				return;
 
+			HandleUtility.AddDefaultControl(GUIUtility.GetControlID(FocusType.Passive));
 			Event e = Event.current;
 			if (CheckClick())
 			{
@@ -98,7 +99,8 @@ public class GridEditorWindow : EditorWindow
 	static void AddNewGrid()
 	{
 		Vector2 mousePos = Event.current.mousePosition;
-							mousePos.y = SceneView.currentDrawingSceneView.camera.pixelHeight - mousePos.y;
+		mousePos.y = SceneView.currentDrawingSceneView.camera.pixelHeight - mousePos.y;
+
 		Vector3 mouseWorldPos = SceneView.currentDrawingSceneView.camera.ScreenPointToRay(mousePos).origin;
 
 		var gridSize = new Vector2(1f, 1f);
