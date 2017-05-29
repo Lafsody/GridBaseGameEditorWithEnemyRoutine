@@ -87,6 +87,11 @@ public class MapEditorWindow : EditorWindow
 	{
 		GUILayout.BeginArea(objectEditorSection, skin.GetStyle("ObjectEditor"));
 
+		if (GUILayout.Button("Grid Editor", skin.GetStyle("button")))
+		{
+			GridEditorWindow.OpenWindow();
+		}
+
 		GUILayout.EndArea();
 	}
 }
