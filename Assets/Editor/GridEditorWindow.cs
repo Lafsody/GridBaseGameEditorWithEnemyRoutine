@@ -81,29 +81,63 @@ public class GridEditorWindow : EditorWindow
 			if (!isEnabled)
 				return;
 
-			Event hotkey_e = Event.current;
-			switch(hotkey_e.type)
+			Event e = Event.current;
+			if (CheckClick())
 			{
-				case EventType.KeyDown:
-					if (hotkey_e.shift)
-					{
-						switch(hotkey_e.keyCode)
-						{
-							case KeyCode.A:
-								CreateGrid();
-								break;
-						}
-					}
-					break;
+				AddNewGrid();
 			}
 		}
 	}
+	
+	static bool CheckClick()
+	{
+		Event e = Event.current;
+ 		return e.control && e.type == EventType.MouseDown && e.button == 0;
+	}
 
-	static void CreateGrid()
+	static void AddNewGrid()
+	{
+		Vector2 mousePos = Event.current.mousePosition;
+							mousePos.y = SceneView.currentDrawingSceneView.camera.pixelHeight - mousePos.y;
+		Vector3 mouseWorldPos = SceneView.currentDrawingSceneView.camera.ScreenPointToRay(mousePos).origin;
+		var gridSize = new Vector2(1f, 1f);
+		if (EditorPrefs.HasKey("gridSizex") && EditorPrefs.HasKey("gridSizey"))
+		{
+			gridSize.x = EditorPrefs.GetFloat("gridSizex");
+			gridSize.y = EditorPrefs.GetFloat("gridSizey");
+		}
+
+		mouseWorldPos.y = 0;
+		if (gridSize.x > 0.05f && gridSize.y > 0.05f)
+		{
+			mouseWorldPos.x = Mathf.Floor((mouseWorldPos.x + gridSize.x/2)/ gridSize.x) * gridSize.x;
+			mouseWorldPos.z = Mathf.Floor((mouseWorldPos.z + gridSize.y/2)/ gridSize.y) * gridSize.y;
+		}
+		
+		mouseWorldPos.y = 0;
+		GameObject[] allgo = GameObject.FindObjectsOfType(typeof (GameObject)) as GameObject[];
+		int brk = 0;
+		for (int i = 0; i < allgo.Length;i++)
+		{
+			if (Mathf.Approximately(allgo[i].transform.position.x, mouseWorldPos.x) && Mathf.Approximately(allgo[i].transform.position.y, mouseWorldPos.y) && Mathf.Approximately(allgo[i].transform.position.z, mouseWorldPos.z))
+			{
+				brk++;
+				break;
+			}
+		}
+		if (brk == 0)
+		{
+			CreateGrid(mouseWorldPos);
+		}
+	}
+
+	static void CreateGrid(Vector3 position)
 	{
 		Object prefab = AssetDatabase.LoadAssetAtPath("Assets/Prefabs/SceneObjects/Floor.prefab", typeof(GameObject));
 		GameObject clone = Instantiate(prefab, Vector3.zero, Quaternion.identity) as GameObject;
 		
+		clone.transform.position = position;
+
 		Undo.RegisterCreatedObjectUndo(clone, "Create " + clone.name);
 		Undo.IncrementCurrentGroup();
 	}

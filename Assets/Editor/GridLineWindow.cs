@@ -5,7 +5,9 @@ using System;
 
 public class GridLineWindow : EditorWindow
 {
-	static readonly String enableFlagString = "isGridLineEnable";
+	static readonly String enableFlagStringPrefs = "isGridLineEnable";
+	static readonly String gridSizePrefs = "gridSize";
+	static readonly String shiftToMiddlePrefs = "shiftToMiddle";
 
 	static Vector2 gridSize = new Vector2(1, 1);
 	static Vector2 maxGrid = new Vector2(100, 100);
@@ -19,10 +21,10 @@ public class GridLineWindow : EditorWindow
 
 	private static void ToggleGridLine()
 	{
-		if (!EditorPrefs.HasKey(enableFlagString))
-			EditorPrefs.SetBool(enableFlagString, false);
-		var isEnable = EditorPrefs.GetBool(enableFlagString);
-		EditorPrefs.SetBool(enableFlagString, !isEnable);
+		if (!EditorPrefs.HasKey(enableFlagStringPrefs))
+			EditorPrefs.SetBool(enableFlagStringPrefs, false);
+		var isEnable = EditorPrefs.GetBool(enableFlagStringPrefs);
+		EditorPrefs.SetBool(enableFlagStringPrefs, !isEnable);
 	}
 
 	[CustomEditor(typeof(Transform))]
@@ -31,7 +33,7 @@ public class GridLineWindow : EditorWindow
 		[DrawGizmo(GizmoType.NotInSelectionHierarchy)]
 		static void RenderCustomGizmo(Transform objectTransform, GizmoType gizmoType)
 		{
-			if (!EditorPrefs.GetBool(enableFlagString))
+			if (!EditorPrefs.GetBool(enableFlagStringPrefs))
 				return;
 			
 			var xOffset = 0f;
@@ -125,6 +127,10 @@ public class GridLineWindow : EditorWindow
 			gridSize = tempGridSize;
 			maxGrid = tempMaxGrid;
 			shiftToMiddle = tempShiftToMiddle;
+
+			EditorPrefs.SetFloat(gridSizePrefs + "x", gridSize.x);
+			EditorPrefs.SetFloat(gridSizePrefs + "y", gridSize.y);
+			EditorPrefs.SetBool(shiftToMiddlePrefs, shiftToMiddle);
 		}
 	}
 }
