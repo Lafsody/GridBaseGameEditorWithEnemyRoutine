@@ -10,16 +10,24 @@ public class GridEditorWindow : EditorWindow
 	private static bool isEnabled;
 	private static EditOption selected;
 
+	Rect headerSection;
+	Rect bodySection;
+	Rect modeSection;
+	Rect infoSection;
+
+	GUISkin skin;
+
 	public static void OpenWindow()
 	{
 		var window = GetWindow(typeof(GridEditorWindow)) as GridEditorWindow;
-		window.minSize = new Vector2(300, 400);
+		window.minSize = new Vector2(400, 400);
 		window.Show();
 	}
 
 	void OnEnable()
 	{
 		isEnabled = true;
+		skin = Resources.Load<GUISkin>("GUIStyle/ObjectsEditorSkin");
 		Editor.CreateInstance(typeof(SceneViewEventHandler));
 	}
 
@@ -30,7 +38,35 @@ public class GridEditorWindow : EditorWindow
 
 	void OnGUI()
 	{
-		
+		DrawLayout();
+		DrawHeader();
+		DrawBody();
+	}
+
+	void DrawLayout()
+	{
+		headerSection.x = 0;
+		headerSection.y = 0;
+		headerSection.width = Screen.width;
+		headerSection.height = 50;
+
+		bodySection.x = 0;
+		bodySection.y =  headerSection.height;
+		bodySection.width = Screen.width;
+		bodySection.height = Screen.height - headerSection.height;
+	}
+
+	void DrawHeader()
+	{
+		GUILayout.BeginArea(headerSection, skin.GetStyle("Header"));
+		GUILayout.Label("Grid Editor", skin.GetStyle("Header"));
+		GUILayout.EndArea();
+	}
+
+	void DrawBody()
+	{
+		GUILayout.BeginArea(bodySection, skin.GetStyle("Body"));
+		GUILayout.EndArea();
 	}
 
 	public class SceneViewEventHandler : Editor

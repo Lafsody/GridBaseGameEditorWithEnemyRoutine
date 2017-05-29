@@ -7,10 +7,6 @@ public class MapEditorWindow : EditorWindow
 {
 	Color headerSectionColor = new Color(40/255f, 40/255f, 100/255f, 1);
 
-	Texture2D headerTexture;
-	Texture2D visibilityControlTexture;
-	Texture2D objectEditorTexture;
-	
 	GUISkin skin;
 
 	Rect headerSection;
@@ -33,12 +29,9 @@ public class MapEditorWindow : EditorWindow
 
 	void InitTexture()
 	{
-		headerTexture = new Texture2D(1, 1);
-		headerTexture.SetPixel(0, 0, headerSectionColor);
-		headerTexture.Apply();
-
-		visibilityControlTexture = Resources.Load<Texture2D>("bg/bg2");
-		objectEditorTexture = Resources.Load<Texture2D>("bg/bg3");	
+		// headerTexture = new Texture2D(1, 1);
+		// headerTexture.SetPixel(0, 0, headerSectionColor);
+		// headerTexture.Apply();
 	}
 
 	void OnGUI()
@@ -65,8 +58,6 @@ public class MapEditorWindow : EditorWindow
 		objectEditorSection.y = headerSection.height;
 		objectEditorSection.width = Screen.width - visibilityControlSection.width;
 		objectEditorSection.height = Screen.height - headerSection.height;
-
-		GUI.DrawTexture(headerSection, headerTexture);
 	}
 
 	void DrawHeader()
