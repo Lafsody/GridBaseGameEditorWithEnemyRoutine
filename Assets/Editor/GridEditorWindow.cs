@@ -66,6 +66,8 @@ public class GridEditorWindow : EditorWindow
 	void DrawBody()
 	{
 		GUILayout.BeginArea(bodySection, skin.GetStyle("Body"));
+		GUILayout.Label("Create Grid [Ctrl + Click]", skin.GetStyle("BodyText"));
+		GUILayout.Label("Delete Grid [Shift + Click]", skin.GetStyle("BodyText"));
 		GUILayout.EndArea();
 	}
 
@@ -83,20 +85,88 @@ public class GridEditorWindow : EditorWindow
 
 			HandleUtility.AddDefaultControl(GUIUtility.GetControlID(FocusType.Passive));
 			Event e = Event.current;
-			if (CheckClick())
+			if (CheckCtrlClick())
 			{
 				AddNewGrid();
+			}
+			else if (CheckShiftClick())
+			{
+				DeleteGrid();
 			}
 		}
 	}
 	
-	static bool CheckClick()
+	static bool CheckCtrlClick()
 	{
 		Event e = Event.current;
  		return e.control && e.type == EventType.MouseDown && e.button == 0;
 	}
 
+	static bool CheckAltClick()
+	{
+		Event e = Event.current;
+		return e.alt && e.type == EventType.MouseDown && e.button == 0;
+	}
+
+	static bool CheckShiftClick()
+	{
+		Event e = Event.current;
+		return e.shift && e.type == EventType.MouseDown && e.button == 0;
+	}
+
+	static bool CheckNormalClick()
+	{
+		Event e = Event.current;
+		return (!e.alt && !e.shift && !e.control) && e.type == EventType.MouseDown && e.button == 0;
+	}
+
 	static void AddNewGrid()
+	{
+		Vector3 mouseWorldPos = GetMouseWorldPos();
+		
+		GridController[] allgo = GameObject.FindObjectsOfType(typeof (GridController)) as GridController[];
+		int brk = 0;
+		for (int i = 0; i < allgo.Length;i++)
+		{
+			if (Mathf.Approximately(allgo[i].transform.position.x, mouseWorldPos.x) && Mathf.Approximately(allgo[i].transform.position.y, mouseWorldPos.y) && Mathf.Approximately(allgo[i].transform.position.z, mouseWorldPos.z))
+			{
+				brk++;
+				break;
+			}
+		}
+		if (brk == 0)
+		{
+			CreateGrid(mouseWorldPos);
+		}
+	}
+
+	static void CreateGrid(Vector3 position)
+	{
+		Object prefab = AssetDatabase.LoadAssetAtPath("Assets/Prefabs/SceneObjects/Floor.prefab", typeof(GameObject));
+		GameObject clone = Instantiate(prefab, Vector3.zero, Quaternion.identity) as GameObject;
+		
+		clone.transform.position = position;
+
+		Undo.RegisterCreatedObjectUndo(clone, "Create " + clone.name);
+		Undo.IncrementCurrentGroup();
+	}
+
+	static void DeleteGrid()
+	{
+		Vector3 mouseWorldPos = GetMouseWorldPos();
+		GridController[] allgo = GameObject.FindObjectsOfType(typeof (GridController)) as GridController[];
+
+		for (int i = 0; i < allgo.Length;i++)
+		{
+			if (Mathf.Approximately(allgo[i].transform.position.x, mouseWorldPos.x) && Mathf.Approximately(allgo[i].transform.position.y, mouseWorldPos.y) && Mathf.Approximately(allgo[i].transform.position.z, mouseWorldPos.z))
+			{
+				Undo.DestroyObjectImmediate(allgo[i].gameObject);
+				Undo.IncrementCurrentGroup();
+			}
+		}
+	}
+
+	static Vector3 GetMouseWorldPos()
 	{
 		Vector2 mousePos = Event.current.mousePosition;
 		mousePos.y = SceneView.currentDrawingSceneView.camera.pixelHeight - mousePos.y;
@@ -129,32 +199,7 @@ public class GridEditorWindow : EditorWindow
 				mouseWorldPos.z = Mathf.Floor((mouseWorldPos.z)/ gridSize.y) * gridSize.y + gridSize.y/2;
 			}
 		}
-		
-		mouseWorldPos.y = 0;
-		GameObject[] allgo = GameObject.FindObjectsOfType(typeof (GameObject)) as GameObject[];
-		int brk = 0;
-		for (int i = 0; i < allgo.Length;i++)
-		{
-			if (Mathf.Approximately(allgo[i].transform.position.x, mouseWorldPos.x) && Mathf.Approximately(allgo[i].transform.position.y, mouseWorldPos.y) && Mathf.Approximately(allgo[i].transform.position.z, mouseWorldPos.z))
-			{
-				brk++;
-				break;
-			}
-		}
-		if (brk == 0)
-		{
-			CreateGrid(mouseWorldPos);
-		}
-	}
 
-	static void CreateGrid(Vector3 position)
-	{
-		Object prefab = AssetDatabase.LoadAssetAtPath("Assets/Prefabs/SceneObjects/Floor.prefab", typeof(GameObject));
-		GameObject clone = Instantiate(prefab, Vector3.zero, Quaternion.identity) as GameObject;
-		
-		clone.transform.position = position;
-
-		Undo.RegisterCreatedObjectUndo(clone, "Create " + clone.name);
-		Undo.IncrementCurrentGroup();
+		return mouseWorldPos;
 	}
 }
