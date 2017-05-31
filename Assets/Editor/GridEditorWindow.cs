@@ -7,7 +7,7 @@ enum EditOption {Null, Add, Delete, Select}
 
 public class GridEditorWindow : EditorWindow
 {
-	private static bool isEnabled;
+	public  static bool isEnabled;
 	private static EditOption selected;
 
 	Rect headerSection;

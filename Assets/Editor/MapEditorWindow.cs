@@ -13,6 +13,12 @@ public class MapEditorWindow : EditorWindow
 	Rect visibilityControlSection;
 	Rect objectEditorSection;
 
+	string ModeText;
+	static readonly string defaultModeText = "Editor Mode";
+	static readonly string prefixModeText = "Mode : ";
+	static readonly string gridEditModeText = prefixModeText + "Grid Edit";
+	static readonly string playerEditModeText = prefixModeText + "Player Edit";
+
 	[MenuItem("GameEditor/MapEditor")]
 	private static void Init()
 	{
@@ -25,6 +31,12 @@ public class MapEditorWindow : EditorWindow
 	{
 		InitTexture();
 		skin = Resources.Load<GUISkin>("GUIStyle/MapEditorSkin");
+		SceneView.onSceneGUIDelegate += OnSceneCurrentModeText;
+	}
+
+	void OnDisable()
+	{
+		SceneView.onSceneGUIDelegate -= OnSceneCurrentModeText;
 	}
 
 	void InitTexture()
@@ -84,5 +96,20 @@ public class MapEditorWindow : EditorWindow
 		}
 
 		GUILayout.EndArea();
+	}
+
+	void OnSceneCurrentModeText(SceneView sceneview)
+	{
+		Handles.BeginGUI();
+		GUILayout.BeginArea( new Rect( 10, Screen.height - 90, Screen.width - 20, 50 ) );
+
+		ModeText = defaultModeText;
+		if (GridEditorWindow.isEnabled)
+			ModeText = gridEditModeText;
+
+		GUILayout.Label(ModeText, skin.GetStyle("OnScreenText"));
+
+		GUILayout.EndArea();
+		Handles.EndGUI();
 	}
 }
