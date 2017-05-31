@@ -17,6 +17,9 @@ public class GridEditorWindow : EditorWindow
 
 	GUISkin skin;
 
+	static GridController selectedGrid;
+	static Vector3 formerPosition;
+
 	public static void OpenWindow()
 	{
 		var window = GetWindow(typeof(GridEditorWindow)) as GridEditorWindow;
@@ -93,6 +96,23 @@ public class GridEditorWindow : EditorWindow
 			{
 				DeleteGrid();
 			}
+			else{
+
+				if (CheckNormalClick())
+				{
+					SelectGrid();
+				}
+
+				if (CheckDrag())
+				{
+					DragSelectedGrid();
+				}
+
+				if (CheckMouseUp())
+				{
+					ReleaseGrid();
+				}
+			}
 		}
 	}
 	
@@ -120,6 +140,24 @@ public class GridEditorWindow : EditorWindow
 		return (!e.alt && !e.shift && !e.control) && e.type == EventType.MouseDown && e.button == 0;
 	}
 
+	static bool CheckNormalDrag()
+	{
+		Event e = Event.current;
+		return (!e.alt && !e.shift && !e.control) && CheckDrag();
+	}
+
+	static bool CheckDrag()
+	{
+		Event e = Event.current;
+		return e.type == EventType.MouseDrag && e.button == 0;
+	}
+
+	static bool CheckMouseUp()
+	{
+		Event e = Event.current;
+		return e.type == EventType.MouseUp && e.button == 0;
+	}
+
 	static void AddNewGrid()
 	{
 		Vector3 mouseWorldPos = GetMouseWorldPos();
@@ -127,18 +165,7 @@ public class GridEditorWindow : EditorWindow
 		if (mouseWorldPos.x < 0 || mouseWorldPos.y < 0)
 			return;
 		
-		GridController[] allgo = GameObject.FindObjectsOfType(typeof (GridController)) as GridController[];
-		
-		int brk = 0;
-		for (int i = 0; i < allgo.Length;i++)
-		{
-			if (Mathf.Approximately(allgo[i].transform.position.x, mouseWorldPos.x) && Mathf.Approximately(allgo[i].transform.position.y, mouseWorldPos.y) && Mathf.Approximately(allgo[i].transform.position.z, mouseWorldPos.z))
-			{
-				brk++;
-				break;
-			}
-		}
-		if (brk == 0)
+		if (!HasGrid())
 		{
 			CreateGrid(mouseWorldPos);
 		}
@@ -168,6 +195,45 @@ public class GridEditorWindow : EditorWindow
 				Undo.IncrementCurrentGroup();
 			}
 		}
+	}
+
+	static void SelectGrid()
+	{
+		Vector3 mouseWorldPos = GetMouseWorldPos();
+		GridController[] allgo = GameObject.FindObjectsOfType(typeof (GridController)) as GridController[];
+
+		for (int i = 0; i < allgo.Length;i++)
+		{
+			if (Mathf.Approximately(allgo[i].transform.position.x, mouseWorldPos.x) && Mathf.Approximately(allgo[i].transform.position.y, mouseWorldPos.y) && Mathf.Approximately(allgo[i].transform.position.z, mouseWorldPos.z))
+			{
+				selectedGrid = allgo[i];
+				formerPosition = selectedGrid.transform.position;
+				return;
+			}
+		}
+	}
+
+	static void DragSelectedGrid()
+	{
+		if (selectedGrid == null)
+			return;
+
+		Vector3 mouseWorldPos = GetMouseWorldPos();
+		selectedGrid.transform.position = mouseWorldPos;
+	}
+
+	static void ReleaseGrid()
+	{
+		if (selectedGrid == null)
+			return;
+		
+		if (GridCount() > 1)
+		{
+			selectedGrid.transform.position = formerPosition;
+		}
+
+		selectedGrid = null;
+		formerPosition = default(Vector3);
 	}
 
 	static Vector3 GetMouseWorldPos()
@@ -205,5 +271,27 @@ public class GridEditorWindow : EditorWindow
 		}
 
 		return mouseWorldPos;
+	}
+
+	static bool HasGrid()
+	{
+		return GridCount() > 0;
+	}
+
+	static int GridCount()
+	{
+		Vector3 mouseWorldPos = GetMouseWorldPos();
+		GridController[] allgo = GameObject.FindObjectsOfType(typeof (GridController)) as GridController[];
+
+		int brk = 0;
+		for (int i = 0; i < allgo.Length;i++)
+		{
+			if (Mathf.Approximately(allgo[i].transform.position.x, mouseWorldPos.x) && Mathf.Approximately(allgo[i].transform.position.y, mouseWorldPos.y) && Mathf.Approximately(allgo[i].transform.position.z, mouseWorldPos.z))
+			{
+				brk++;
+			}
+		}
+
+		return brk;
 	}
 }
