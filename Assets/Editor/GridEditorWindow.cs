@@ -123,8 +123,12 @@ public class GridEditorWindow : EditorWindow
 	static void AddNewGrid()
 	{
 		Vector3 mouseWorldPos = GetMouseWorldPos();
+
+		if (mouseWorldPos.x < 0 || mouseWorldPos.y < 0)
+			return;
 		
 		GridController[] allgo = GameObject.FindObjectsOfType(typeof (GridController)) as GridController[];
+		
 		int brk = 0;
 		for (int i = 0; i < allgo.Length;i++)
 		{
