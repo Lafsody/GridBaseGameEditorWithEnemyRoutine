@@ -20,6 +20,8 @@ public class GridEditorWindow : EditorWindow
 	static GridController selectedGrid;
 	static Vector3 formerPosition;
 
+	Tool lastTool = Tool.None;
+
 	public static void OpenWindow()
 	{
 		var window = GetWindow(typeof(GridEditorWindow)) as GridEditorWindow;
@@ -32,11 +34,17 @@ public class GridEditorWindow : EditorWindow
 		isEnabled = true;
 		skin = Resources.Load<GUISkin>("GUIStyle/ObjectsEditorSkin");
 		Editor.CreateInstance(typeof(SceneViewEventHandler));
+		
+		lastTool = Tools.current;
+		Tools.current = Tool.None;
+    	Tools.hidden = true;
 	}
 
 	void OnDestroy()
 	{
 		isEnabled = false;
+		Tools.current = lastTool;
+    	Tools.hidden = false;
 	}
 
 	void OnGUI()
@@ -78,7 +86,7 @@ public class GridEditorWindow : EditorWindow
 	{
 		static SceneViewEventHandler()
 		{
-			SceneView.onSceneGUIDelegate += OnSceneGUI;
+			SceneView.onSceneGUIDelegate = OnSceneGUI;
 		}
 
 		static void OnSceneGUI(SceneView aView)
@@ -86,7 +94,9 @@ public class GridEditorWindow : EditorWindow
 			if (!isEnabled)
 				return;
 
+			Tools.current = Tool.None;
 			HandleUtility.AddDefaultControl(GUIUtility.GetControlID(FocusType.Passive));
+
 			Event e = Event.current;
 			if (CheckCtrlClick())
 			{
