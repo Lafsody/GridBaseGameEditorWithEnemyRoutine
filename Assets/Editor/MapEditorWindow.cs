@@ -112,4 +112,19 @@ public class MapEditorWindow : EditorWindow
 		GUILayout.EndArea();
 		Handles.EndGUI();
 	}
+
+	public static GameObject GetContainer()
+	{
+		var container = GameObject.Find("Container");
+		if (container == null)
+		{
+			var go = new GameObject();
+			go.name = "Container";
+			go.transform.position = Vector3.zero;
+			container = go;
+
+			Undo.RegisterCreatedObjectUndo(go, "Container");
+		}
+		return container;
+	}
 }

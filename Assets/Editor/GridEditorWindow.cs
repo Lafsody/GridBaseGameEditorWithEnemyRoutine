@@ -183,10 +183,13 @@ public class GridEditorWindow : EditorWindow
 
 	static void CreateGrid(Vector3 position)
 	{
+		var gridContainer = GetGridContainer();
+
 		Object prefab = AssetDatabase.LoadAssetAtPath("Assets/Prefabs/SceneObjects/Floor.prefab", typeof(GameObject));
 		GameObject clone = Instantiate(prefab, Vector3.zero, Quaternion.identity) as GameObject;
 		
 		clone.transform.position = position;
+		clone.transform.parent = gridContainer.transform;
 
 		Undo.RegisterCreatedObjectUndo(clone, "Create " + clone.name);
 		Undo.IncrementCurrentGroup();
@@ -303,5 +306,24 @@ public class GridEditorWindow : EditorWindow
 		}
 
 		return brk;
+	}
+
+	static GameObject GetGridContainer()
+	{
+		var container = MapEditorWindow.GetContainer();
+		var gridContainer = container.transform.Find("Grid");
+
+		if (gridContainer == null)
+		{
+			var go = new GameObject();
+			go.name = "Grid";
+			go.transform.position = Vector3.zero;
+			go.transform.parent = container.transform;
+			gridContainer = go.transform;
+
+			Undo.RegisterCreatedObjectUndo(go, "GridContainer");
+		}
+
+		return gridContainer.gameObject;
 	}
 }
