@@ -186,7 +186,7 @@ public class GridEditorWindow : EditorWindow
 		var gridContainer = GetGridContainer();
 
 		Object prefab = AssetDatabase.LoadAssetAtPath("Assets/Prefabs/SceneObjects/Floor.prefab", typeof(GameObject));
-		GameObject clone = Instantiate(prefab, Vector3.zero, Quaternion.identity) as GameObject;
+		GameObject clone = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
 		
 		clone.transform.position = position;
 		clone.transform.parent = gridContainer.transform;
